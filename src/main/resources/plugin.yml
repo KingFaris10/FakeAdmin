@@ -1,0 +1,10 @@
+name: FakeAdmin
+version: ${project.version}
+main: com.faris.fakeadmin.FakeAdmin
+description: Troll noobs into thinking they are administrators!
+author: KingFaris10
+softdepend: [Essentials]
+commands:
+    fakeadmin:
+      description: Give a player administrator!
+      usage: /<command> <admin <player>|clear|list|spy|whois <nickname>>
