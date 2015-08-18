@@ -43,31 +43,31 @@ public enum ConfigCommand {
 	private List<String> usageMessages = Collections.singletonList("&cUsage: &4/<usage>");
 	private List<SpecialAttribute> specialAttributes = new ArrayList<>();
 
-	private ConfigCommand(List<String> usageMessages, SpecialAttribute... specialAttributes) {
+	ConfigCommand(List<String> usageMessages, SpecialAttribute... specialAttributes) {
 		this.usageMessages = usageMessages;
 		if (specialAttributes != null && specialAttributes.length > 0)
 			this.specialAttributes = new ArrayList<>(Arrays.asList(specialAttributes));
 	}
 
-	private ConfigCommand(String configKey, String usageMessage) {
+	ConfigCommand(String configKey, String usageMessage) {
 		this.configKey = configKey;
 		this.usageMessages = new ArrayList<>(Collections.singletonList(usageMessage));
 	}
 
-	private ConfigCommand(boolean enabled, List<String> usageMessages, SpecialAttribute... specialAttributes) {
+	ConfigCommand(boolean enabled, List<String> usageMessages, SpecialAttribute... specialAttributes) {
 		this.enabled = enabled;
 		this.usageMessages = usageMessages;
 		if (specialAttributes != null && specialAttributes.length > 0)
 			this.specialAttributes = new ArrayList<>(Arrays.asList(specialAttributes));
 	}
 
-	private ConfigCommand(boolean enabled, String configKey, String usageMessage) {
+	ConfigCommand(boolean enabled, String configKey, String usageMessage) {
 		this.enabled = enabled;
 		this.configKey = configKey;
 		this.usageMessages = new ArrayList<>(Collections.singletonList(usageMessage));
 	}
 
-	private ConfigCommand(boolean enabled, String configKey, List<String> usageMessages, SpecialAttribute... specialAttributes) {
+	ConfigCommand(boolean enabled, String configKey, List<String> usageMessages, SpecialAttribute... specialAttributes) {
 		this.enabled = enabled;
 		this.configKey = configKey;
 		this.usageMessages = usageMessages;

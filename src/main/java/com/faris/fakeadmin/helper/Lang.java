@@ -23,7 +23,6 @@ public enum Lang {
 	COMMAND_CLEAR("Command.Clear", "&6You have cleared all the fake administrators."),
 	COMMAND_FAKE_UNKNOWN("Command.Fake unknown", "Unknown command. Type \"/help\" for help."),
 	COMMAND_LIST("Command.List", "&6Fake admins (<amount>): &b<admins>"),
-	COMMAND_SPY_FAKE_ADMIN("Command.Spy.Fake admin", "&6You cannot spy on fake administrators when you're one yourself!"),
 	COMMAND_SPY_OFF("Command.Spy.Off", "&6You are no longer spying on fake administrators."),
 	COMMAND_SPY_ON("Command.Spy.On", "&6You are now spying on fake administrators!"),
 	COMMAND_UNKNOWN("Command.Unknown", "&cUnknown FakeAdmin command: &4<command>"),
@@ -50,7 +49,7 @@ public enum Lang {
 	private String key = null;
 	private String defaultValue = null;
 
-	private Lang(String key, String defaultValue) {
+	Lang(String key, String defaultValue) {
 		this.key = key;
 		this.defaultValue = defaultValue;
 	}
@@ -108,7 +107,7 @@ public enum Lang {
 		}
 		try {
 			messagesConfig.save(messagesFile);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 	}
 

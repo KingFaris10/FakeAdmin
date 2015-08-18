@@ -176,9 +176,9 @@ public class CommandListener implements CommandExecutor {
 						} else if (strCommand.equalsIgnoreCase("spy")) {
 							if (sender.hasPermission(Permissions.COMMAND_SPY)) {
 								if (sender instanceof Player) {
-									if (args.length == 1) {
-										Player player = (Player) sender;
-										if (this.getPlugin().getManager().getConfigManager().canFakeAdminsBecomeSpies() || !this.getPlugin().getManager().getSpyManager().isSpy(player.getUniqueId())) {
+									Player player = (Player) sender;
+									if (!this.getPlugin().getManager().getAdminManager().isFakeAdmin(player.getUniqueId())) {
+										if (args.length == 1) {
 											if (this.getPlugin().getManager().getSpyManager().isSpy(player.getUniqueId())) {
 												this.getPlugin().getManager().getSpyManager().removeSpy(player.getUniqueId());
 
@@ -199,10 +199,10 @@ public class CommandListener implements CommandExecutor {
 												Lang.sendMessage(player, Lang.COMMAND_SPY_ON);
 											}
 										} else {
-											Lang.sendMessage(player, Lang.COMMAND_SPY_FAKE_ADMIN);
+											Lang.sendReplacedMessage(sender, Lang.COMMAND_USAGE, "<usage>", cmd.getName() + " " + strCommand.toLowerCase());
 										}
 									} else {
-										Lang.sendReplacedMessage(sender, Lang.COMMAND_USAGE, "<usage>", cmd.getName() + " " + strCommand.toLowerCase());
+										Lang.sendReplacedMessage(sender, Lang.COMMAND_UNKNOWN, "<command>", strCommand.toLowerCase());
 									}
 								} else {
 									Lang.sendReplacedMessage(sender, Lang.GENERAL_PLAYER, "<command>", strCommand.toLowerCase());

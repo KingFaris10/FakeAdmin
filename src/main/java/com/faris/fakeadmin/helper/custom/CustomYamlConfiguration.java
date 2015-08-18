@@ -37,7 +37,7 @@ public class CustomYamlConfiguration extends YamlConfiguration {
 				configFile.createNewFile();
 			}
 			config.load(configFile);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return config;
 	}

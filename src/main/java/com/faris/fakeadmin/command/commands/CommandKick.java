@@ -33,7 +33,7 @@ public class CommandKick extends AdminCommand {
 					if (ConfigCommand.KICK.hasSpecialAttribute("Kick message")) {
 						List<String> kickMessages = ConfigCommand.KICK.getSpecialAttribute("Kick message").castValue(List.class);
 						for (String kickMsg : kickMessages)
-							this.getPlugin().getManager().getAdminManager().broadcastMessage(Utilities.replaceChatColoursAndFormats(kickMsg.replace("<kicker>", player.getName()).replace("<kicked>", target != null ? target.getName() : strTarget)).replace("<reason>", kickReason));
+							this.getPlugin().getManager().getAdminManager().broadcastMessage(Utilities.replaceChatColoursAndFormats(kickMsg.replace("<kicker>", player.getName()).replace("<kicked>", target.getName())).replace("<reason>", kickReason));
 					}
 				} else {
 					if (ConfigCommand.KICK.hasSpecialAttribute("Exempt player"))

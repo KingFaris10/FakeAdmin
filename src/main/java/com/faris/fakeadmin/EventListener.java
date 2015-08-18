@@ -145,7 +145,7 @@ public class EventListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerTypeCommand(PlayerCommandPreprocessEvent event) {
 		try {
 			if (event.isCancelled()) return;
@@ -161,7 +161,7 @@ public class EventListener implements Listener {
 							Constructor<? extends AdminCommand> commandConstructor = commandClass.getConstructor();
 							if (commandConstructor != null) {
 								String[] commandArgs = new String[commandSplit.length - 1];
-								for (int i = 1; i < commandSplit.length; i++) commandArgs[i - 1] = commandSplit[i];
+								System.arraycopy(commandSplit, 1, commandArgs, 0, commandSplit.length - 1);
 								AdminCommand adminCommand = commandConstructor.newInstance();
 								try {
 									AdminCommand.CommandReturnType returnType = adminCommand.onCommand(event.getPlayer(), strCommand, commandArgs);
@@ -184,9 +184,9 @@ public class EventListener implements Listener {
 									this.getPlugin().getManager().getSpyManager().showCommand(event.getPlayer().getName(), strCommand.toLowerCase() + " " + Utilities.toString(commandArgs));
 								}
 							}
-						} catch (Exception ex) {
+						} catch (Exception ignored) {
 						}
-						event.setCancelled(cancelEvent);
+						if (cancelEvent) event.setCancelled(true);
 					}
 				}
 			}

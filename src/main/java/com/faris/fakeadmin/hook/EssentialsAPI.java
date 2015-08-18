@@ -9,13 +9,17 @@ public class EssentialsAPI {
 		return Utilities.isPluginEnabled("Essentials");
 	}
 
+	public static boolean hasEssentialsChat() {
+		return Utilities.isPluginEnabled("EssentialsChat");
+	}
+
 	public static boolean isMuted(Player player) {
 		if (hasEssentials()) {
 			try {
 				com.earth2me.essentials.Essentials essentials = (com.earth2me.essentials.Essentials) Utilities.getPlugin("Essentials");
 				com.earth2me.essentials.User user = essentials.getUser(player);
 				return user.isMuted();
-			} catch (Exception ex) {
+			} catch (Exception ignored) {
 			}
 		}
 		return false;
@@ -27,7 +31,7 @@ public class EssentialsAPI {
 				com.earth2me.essentials.Essentials essentials = (com.earth2me.essentials.Essentials) Utilities.getPlugin("Essentials");
 				com.earth2me.essentials.User user = essentials.getUser(player);
 				return user.isVanished();
-			} catch (Exception ex) {
+			} catch (Exception ignored) {
 			}
 		}
 		return false;

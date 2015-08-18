@@ -19,26 +19,35 @@ import java.util.logging.Level;
 
 public class ConfigurationManager implements Manager {
 
-	private boolean fakeAdminsBecomeSpies = false;
+	private boolean loading = false;
+
+	private boolean[] updater = new boolean[2];
 
 	@Override
 	public void onDisable() {
-		this.commandsConfig = null;
-		this.commandsFile = null;
+		if (!this.loading) {
+			this.commandsConfig = null;
+			this.commandsFile = null;
+		}
+		this.loading = false;
 	}
 
 	public void loadConfiguration() {
 		this.getConfig().options().header("FakeAdmin configuration");
-		this.getConfig().addDefault("Allow fake admins to become spies", true);
+		this.getConfig().addDefault("Updater.Check", true);
+		this.getConfig().addDefault("Updater.Update", false);
 		this.getConfig().addDefault("Fake admins", new ArrayList<String>());
 		this.getConfig().addDefault("Command spies", new ArrayList<String>());
 		this.getConfig().options().copyDefaults(true);
 		this.getConfig().options().copyHeader(true);
 		this.saveConfig();
 
-		this.fakeAdminsBecomeSpies = this.getConfig().getBoolean("Allow fake admins to become spies", true);
-
+		this.loading = true;
 		FakeAdmin.getInstance().getManager().onDisable(false);
+		this.loading = false;
+
+		this.updater[0] = this.getConfig().getBoolean("Updater.Check");
+		this.updater[1] = this.getConfig().getBoolean("Updater.Update");
 
 		List<String> listAdmins = this.getConfig().getStringList("Fake admins");
 		for (String strFakeAdminUUID : listAdmins) {
@@ -57,7 +66,7 @@ public class ConfigurationManager implements Manager {
 
 	private void loadUsers() {
 		if (ConfigCommand.NICK.isEnabled()) {
-			int maxNickLength = ConfigCommand.NICK.getSpecialAttribute("Max nickname length").castValue(Integer.class);
+			int maxNickLength = ConfigCommand.NICK.hasSpecialAttribute("Max nickname length") ? ConfigCommand.NICK.getSpecialAttribute("Max nickname length").castValue(Integer.class) : 15;
 			Map<String, Object> configNicknames = Utilities.getMap(this.getPlayersConfig().get("Nicknames"));
 			for (Map.Entry<String, Object> userEntry : configNicknames.entrySet()) {
 				String strUUID = userEntry.getKey();
@@ -139,8 +148,12 @@ public class ConfigurationManager implements Manager {
 		}
 	}
 
-	public boolean canFakeAdminsBecomeSpies() {
-		return this.fakeAdminsBecomeSpies;
+	public boolean shouldAutoUpdate() {
+		return this.updater[1];
+	}
+
+	public boolean shouldCheckForUpdates() {
+		return this.updater[0];
 	}
 
 	private File commandsFile = null;
@@ -181,7 +194,7 @@ public class ConfigurationManager implements Manager {
 		if (this.commandsConfig == null || this.commandsFile == null) return;
 		try {
 			this.commandsConfig.save(this.commandsFile);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 	}
 
@@ -206,7 +219,7 @@ public class ConfigurationManager implements Manager {
 		if (this.playersConfig == null || this.playersFile == null) return;
 		try {
 			this.playersConfig.save(this.playersFile);
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 	}
 
@@ -231,13 +244,13 @@ public class ConfigurationManager implements Manager {
 					Files.copy(configFileInputStream, configDestination.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					configFileInputStream.close();
 					configFile.delete();
-				} catch (Exception ex2) {
+				} catch (Exception ignored) {
 				}
 			}
 			try {
 				configFile.createNewFile();
 				return new ArrayList<>(Arrays.asList(configFile, customLoadConfiguration(configFile)));
-			} catch (Exception ex2) {
+			} catch (Exception ignored) {
 			}
 		}
 		File tempFile = new File(FakeAdmin.getInstance().getDataFolder(), "temp" + System.currentTimeMillis() + ".yml");
@@ -251,7 +264,7 @@ public class ConfigurationManager implements Manager {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		config.load(file);
 		return config;

@@ -79,7 +79,7 @@ public class Utilities {
 				Byte.parseByte(anObject.toString());
 				return true;
 			}
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return false;
 	}
@@ -90,7 +90,7 @@ public class Utilities {
 				Double.parseDouble(anObject.toString());
 				return true;
 			}
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return false;
 	}
@@ -101,7 +101,7 @@ public class Utilities {
 				Integer.parseInt(anObject.toString());
 				return true;
 			}
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return false;
 	}
@@ -112,7 +112,7 @@ public class Utilities {
 				Long.parseLong(anObject.toString());
 				return true;
 			}
-		} catch (Exception ex) {
+		} catch (Exception ignored) {
 		}
 		return false;
 	}
@@ -146,7 +146,7 @@ public class Utilities {
 			}
 			return new String(b);
 		}
-		return text != null ? text : "";
+		return "";
 	}
 
 	public static String replaceChatColours(String text) {

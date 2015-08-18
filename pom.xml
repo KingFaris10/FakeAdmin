@@ -6,7 +6,7 @@
 
     <groupId>com.faris</groupId>
     <artifactId>FakeAdmin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <packaging>jar</packaging>
 
@@ -87,7 +87,16 @@
                                     <exclude>org.yaml:snakeyaml</exclude>
                                     <exclude>net.ess3</exclude>
                                 </excludes>
+                                <includes>
+                                    <include>net.gravitydevelopment.updater:updater</include>
+                                </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.gravitydevelopment.updater</pattern>
+                                    <shadedPattern>com.faris.fakeadmin.updater</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -130,6 +139,10 @@
             <id>essentials-repo</id>
             <url>http://repo.ess3.net/content/groups/essentials/</url>
         </repository>
+        <repository>
+            <id>gravity-repo</id>
+            <url>http://repo.gravitydevelopment.net/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -142,6 +155,11 @@
             <groupId>net.ess3</groupId>
             <artifactId>Essentials</artifactId>
             <version>2.14-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.gravitydevelopment.updater</groupId>
+            <artifactId>updater</artifactId>
+            <version>2.3</version>
         </dependency>
     </dependencies>
 

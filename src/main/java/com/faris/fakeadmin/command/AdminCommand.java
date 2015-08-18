@@ -27,7 +27,7 @@ public abstract class AdminCommand {
 		return "";
 	}
 
-	public static enum CommandReturnType {
+	public enum CommandReturnType {
 		VALID, INVALID_USAGE, DISABLED;
 	}
 

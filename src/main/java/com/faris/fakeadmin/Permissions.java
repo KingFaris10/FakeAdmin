@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Permissions {
+
 	private static List<Permission> permissionList = null;
 
 	public static Permission COMMAND_FAKE_ADMIN = null;
@@ -58,4 +59,5 @@ public class Permissions {
 		if (permission != null && !permissionList.contains(permission)) permissionList.add(permission);
 		return permission;
 	}
+
 }

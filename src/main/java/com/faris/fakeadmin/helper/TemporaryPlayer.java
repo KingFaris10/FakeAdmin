@@ -46,7 +46,7 @@ public class TemporaryPlayer implements ConfigurationSerializable {
 	}
 
 	public boolean hasExpired() {
-		return this.hasDuration() ? System.currentTimeMillis() - this.getStartTime() >= this.getDuration() : false;
+		return this.hasDuration() && System.currentTimeMillis() - this.getStartTime() >= this.getDuration();
 	}
 
 	@Override

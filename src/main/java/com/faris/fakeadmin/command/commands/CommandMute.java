@@ -58,7 +58,7 @@ public class CommandMute extends AdminCommand {
 							if (ConfigCommand.MUTE.hasSpecialAttribute("Unmute private message")) {
 								List<String> unmuteMessages = ConfigCommand.MUTE.getSpecialAttribute("Unmute private message").castValue(List.class);
 								for (String unmuteMsg : unmuteMessages)
-									this.getPlugin().getManager().getAdminManager().broadcastMessage(Utilities.replaceChatColoursAndFormats(unmuteMsg.replace("<muter>", player.getName()).replace("<muted>", (target != null ? target.getName() : strTarget))));
+									this.getPlugin().getManager().getAdminManager().broadcastMessage(Utilities.replaceChatColoursAndFormats(unmuteMsg.replace("<muter>", player.getName()).replace("<muted>", (target.getName()))));
 							}
 
 							sendMessages = false;

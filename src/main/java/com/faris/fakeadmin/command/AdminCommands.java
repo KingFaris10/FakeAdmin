@@ -40,7 +40,7 @@ public class AdminCommands {
 			registeredCommands.put(command.toLowerCase(), commandClass);
 			registeredAliases.remove(command.toLowerCase());
 			if (aliases != null && aliases.length > 0) {
-				List<String> commandAliases = new ArrayList<String>();
+				List<String> commandAliases = new ArrayList<>();
 				for (String alias : aliases) {
 					if (alias != null && !alias.isEmpty())
 						commandAliases.add(alias.toLowerCase());

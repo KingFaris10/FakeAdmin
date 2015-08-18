@@ -3,7 +3,7 @@ package com.faris.fakeadmin.manager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class ManagerManager implements Manager {
+public class GlobalManager implements Manager {
 
 	private AdminManager adminManager = null;
 	private BanManager banManager = null;
@@ -13,7 +13,7 @@ public class ManagerManager implements Manager {
 	private NicknameManager nickManager = null;
 	private SpyManager spyManager = null;
 
-	public ManagerManager() {
+	public GlobalManager() {
 		this.onEnable();
 	}
 
@@ -65,11 +65,8 @@ public class ManagerManager implements Manager {
 		for (Field field : fields) {
 			try {
 				Object objManager = field.get(this);
-				if (objManager != null) {
-					Method methodOnDisable = objManager.getClass().getMethod("onDisable");
-					if (methodOnDisable != null) methodOnDisable.invoke(objManager);
-				}
-				if (clearInstance) field.set(this, null);
+				if (objManager != null && objManager instanceof Manager) ((Manager) objManager).onDisable();
+				if (clearInstance && objManager != null) field.set(this, null);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

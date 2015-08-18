@@ -65,6 +65,7 @@ public class CommandNick extends AdminCommand {
 								} else {
 									OfflinePlayer offlinePlayer = Utilities.getOfflinePlayer(strTarget);
 									if (offlinePlayer != null) {
+										targetPlayerUUID = offlinePlayer.getUniqueId();
 										this.getPlugin().getManager().getNicknameManager().setNickname(targetPlayerUUID, strNickname);
 
 										this.getPlugin().getManager().getConfigManager().getPlayersConfig().set("Nicknames." + targetPlayerUUID.toString(), strNickname);

@@ -5,7 +5,8 @@ import com.faris.fakeadmin.command.CommandListener;
 import com.faris.fakeadmin.helper.Lang;
 import com.faris.fakeadmin.helper.TemporaryPlayer;
 import com.faris.fakeadmin.helper.Utilities;
-import com.faris.fakeadmin.manager.ManagerManager;
+import com.faris.fakeadmin.manager.GlobalManager;
+import net.gravitydevelopment.updater.Updater;
 import org.bukkit.configuration.serialization.*;
 import org.bukkit.entity.*;
 import org.bukkit.permissions.*;
@@ -16,9 +17,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class FakeAdmin extends JavaPlugin {
+
 	private static FakeAdmin pluginInstance = null;
 
-	private ManagerManager manager = null;
+	private GlobalManager manager = null;
 
 	@Override
 	public void onEnable() {
@@ -26,7 +28,7 @@ public class FakeAdmin extends JavaPlugin {
 		Lang.initialiseMessages();
 		AdminCommands.initialiseCommands();
 		Permissions.initialisePermissions();
-		this.manager = new ManagerManager();
+		this.manager = new GlobalManager();
 		this.manager.getConfigManager().loadConfiguration();
 
 		this.getCommand("fakeadmin").setExecutor(new CommandListener());
@@ -34,7 +36,7 @@ public class FakeAdmin extends JavaPlugin {
 		for (Permission registeredPermission : Permissions.getPermissions()) {
 			try {
 				this.getServer().getPluginManager().addPermission(registeredPermission);
-			} catch (Exception ex) {
+			} catch (Exception ignored) {
 			}
 		}
 
@@ -100,30 +102,59 @@ public class FakeAdmin extends JavaPlugin {
 				if (configChanged) getManager().getConfigManager().savePlayersConfig();
 			}
 		}, 20L, 20L);
+
+		if (this.getManager().getConfigManager().shouldCheckForUpdates()) {
+			this.getLogger().info("Checking for updates...");
+			new Updater(this, 91333, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, new Updater.UpdateCallback() {
+				@Override
+				public void onFinish(Updater updater) {
+					switch (updater.getResult()) {
+						case UPDATE_AVAILABLE:
+							getLogger().info("An update was found!");
+							if (getManager().getConfigManager().shouldAutoUpdate()) {
+								new Updater(FakeAdmin.this, 91333, getFile(), Updater.UpdateType.NO_VERSION_CHECK, true);
+							} else {
+								getLogger().info("Current version: " + getDescription().getFullName());
+								getLogger().info("Latest version: " + updater.getLatestName());
+								getLogger().info("Download link: " + updater.getLatestFileLink());
+							}
+							break;
+						case DISABLED:
+							getLogger().info("No update was found, you have disabled update checking in the Updater configuration.");
+							break;
+						default:
+							getLogger().info("No update was found, you have the latest version.");
+							break;
+					}
+				}
+			}, false);
+		}
 	}
 
 	@Override
 	public void onDisable() {
 		this.getServer().getScheduler().cancelTasks(this);
 
-		for (UUID fakeAdminUUID : this.manager.getAdminManager().getFakeAdmins()) {
-			Player fakeAdmin = this.getServer().getPlayer(fakeAdminUUID);
-			if (fakeAdmin != null && fakeAdmin.isOnline()) {
-				List<TemporaryPlayer> bannedList = this.manager.getBanManager().getBanned();
-				for (TemporaryPlayer temporaryBannedPlayer : bannedList) {
-					if (temporaryBannedPlayer != null) {
-						Player banned = this.getServer().getPlayer(temporaryBannedPlayer.getUniqueId());
-						if (banned != null && banned.isOnline() && !Utilities.PlayerUtilities.isVanished(fakeAdmin, banned))
-							fakeAdmin.showPlayer(banned);
+		if (this.manager != null) {
+			for (UUID fakeAdminUUID : this.manager.getAdminManager().getFakeAdmins()) {
+				Player fakeAdmin = this.getServer().getPlayer(fakeAdminUUID);
+				if (fakeAdmin != null && fakeAdmin.isOnline()) {
+					List<TemporaryPlayer> bannedList = this.manager.getBanManager().getBanned();
+					for (TemporaryPlayer temporaryBannedPlayer : bannedList) {
+						if (temporaryBannedPlayer != null) {
+							Player banned = this.getServer().getPlayer(temporaryBannedPlayer.getUniqueId());
+							if (banned != null && banned.isOnline() && !Utilities.PlayerUtilities.isVanished(fakeAdmin, banned))
+								fakeAdmin.showPlayer(banned);
+						}
 					}
-				}
 
-				List<TemporaryPlayer> kickedList = this.manager.getKickManager().getKicked();
-				for (TemporaryPlayer kickedPlayer : kickedList) {
-					if (kickedPlayer != null) {
-						Player kicked = this.getServer().getPlayer(kickedPlayer.getUniqueId());
-						if (kicked != null && kicked.isOnline() && !Utilities.PlayerUtilities.isVanished(fakeAdmin, kicked))
-							fakeAdmin.showPlayer(kicked);
+					List<TemporaryPlayer> kickedList = this.manager.getKickManager().getKicked();
+					for (TemporaryPlayer kickedPlayer : kickedList) {
+						if (kickedPlayer != null) {
+							Player kicked = this.getServer().getPlayer(kickedPlayer.getUniqueId());
+							if (kicked != null && kicked.isOnline() && !Utilities.PlayerUtilities.isVanished(fakeAdmin, kicked))
+								fakeAdmin.showPlayer(kicked);
+						}
 					}
 				}
 			}
@@ -132,7 +163,7 @@ public class FakeAdmin extends JavaPlugin {
 		for (Permission registeredPermission : Permissions.getPermissions()) {
 			try {
 				this.getServer().getPluginManager().removePermission(registeredPermission);
-			} catch (Exception ex) {
+			} catch (Exception ignored) {
 			}
 		}
 
@@ -141,16 +172,17 @@ public class FakeAdmin extends JavaPlugin {
 
 		ConfigurationSerialization.unregisterClass(TemporaryPlayer.class);
 
-		this.manager.onDisable();
+		if (this.manager != null) this.manager.onDisable();
 		this.manager = null;
 		pluginInstance = null;
 	}
 
-	public ManagerManager getManager() {
+	public GlobalManager getManager() {
 		return this.manager;
 	}
 
 	public static FakeAdmin getInstance() {
 		return pluginInstance;
 	}
+
 }

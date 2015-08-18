@@ -76,15 +76,15 @@ public class UUIDFetcher {
 	 * @return A profile with the given name
 	 */
 	public static Map<String, UUID> lookupNames(List<String> names) {
-		Map<String, UUID> playerProfiles = new HashMap<String, UUID>();
+		Map<String, UUID> playerProfiles = new HashMap<>();
 		if (names != null && !names.isEmpty()) {
-			List<Integer> removeIndexes = new ArrayList<Integer>();
+			List<Integer> removeIndexes = new ArrayList<>();
 			for (int i = 0; i < names.size(); i++) {
 				String name = names.get(i);
 				if (nameCache.contains(name)) {
 					PlayerProfile playerProfile = nameCache.get(name);
 					playerProfiles.put(playerProfile.getName(), playerProfile.getId());
-					removeIndexes.add(new Integer(i));
+					removeIndexes.add(i);
 				}
 			}
 			for (Integer removeIndex : removeIndexes) names.remove(removeIndex.intValue());
@@ -241,7 +241,7 @@ public class UUIDFetcher {
 			connection.setRequestMethod("GET");
 
 			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			String line;
 			while ((line = reader.readLine()) != null) result.append(line);
 			return JSON_PARSER.parse(result.toString());
@@ -252,7 +252,6 @@ public class UUIDFetcher {
 				if (reader != null) reader.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
-				return null;
 			}
 		}
 	}
@@ -271,7 +270,7 @@ public class UUIDFetcher {
 			out = connection.getOutputStream();
 			out.write(body.getBytes());
 			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			StringBuffer result = new StringBuffer();
+			StringBuilder result = new StringBuilder();
 			String line;
 			while ((line = reader.readLine()) != null) result.append(line);
 			return result.toString();
@@ -284,7 +283,6 @@ public class UUIDFetcher {
 				if (reader != null) reader.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
-				return null;
 			}
 		}
 	}
@@ -339,8 +337,7 @@ public class UUIDFetcher {
 			}
 
 			public boolean isExpired() {
-				if (value.get() == null) return true;
-				return expires != -1 && expires > System.currentTimeMillis();
+				return value.get() == null || expires != -1 && expires > System.currentTimeMillis();
 			}
 		}
 	}

@@ -5,8 +5,11 @@ import com.faris.fakeadmin.command.AdminCommand;
 import com.faris.fakeadmin.command.AdminCommands;
 import com.faris.fakeadmin.helper.Utilities;
 import com.faris.fakeadmin.hook.EssentialsAPI;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class FakeAdminAPI {
@@ -21,6 +24,29 @@ public class FakeAdminAPI {
 	 */
 	public static boolean addCommand(String command, Class<? extends AdminCommand> commandClass, String... aliases) {
 		return AdminCommands.registerCommand(command, commandClass, aliases);
+	}
+
+	/**
+	 * Get all the fake admins' UUIDs.
+	 *
+	 * @return The fake admins' UUIDs.
+	 */
+	public static List<UUID> getFakeAdmins() {
+		return FakeAdmin.getInstance().getManager().getAdminManager().getFakeAdmins();
+	}
+
+	/**
+	 * Get all the online fake admins.
+	 *
+	 * @return The online fake admins.
+	 */
+	public static List<Player> getOnlineFakeAdmins() {
+		List<Player> onlineFakeAdmins = new ArrayList<>();
+		for (UUID fakeAdminUUID : getFakeAdmins()) {
+			Player fakeAdmin = Bukkit.getServer().getPlayer(fakeAdminUUID);
+			if (fakeAdmin != null && fakeAdmin.isOnline()) onlineFakeAdmins.add(fakeAdmin);
+		}
+		return onlineFakeAdmins;
 	}
 
 	/**
@@ -65,7 +91,7 @@ public class FakeAdminAPI {
 		@Override
 		public Object getValue(Object... parameters) {
 			Player player = parameters[0] != null ? (Player) parameters[0] : null;
-			return EssentialsAPI.hasEssentials() ? EssentialsAPI.isMuted(player) : false;
+			return EssentialsAPI.hasEssentials() && EssentialsAPI.isMuted(player);
 		}
 	};
 
@@ -92,7 +118,7 @@ public class FakeAdminAPI {
 		public Object getValue(Object... parameters) {
 			Player viewer = parameters[0] != null ? (Player) parameters[0] : null;
 			Player player = parameters[1] != null ? (Player) parameters[1] : null;
-			return EssentialsAPI.hasEssentials() ? viewer != null && !viewer.hasPermission("essentials.vanish.see") && EssentialsAPI.isVanished(player) : false;
+			return EssentialsAPI.hasEssentials() && viewer != null && !viewer.hasPermission("essentials.vanish.see") && EssentialsAPI.isVanished(player);
 		}
 	};
 
